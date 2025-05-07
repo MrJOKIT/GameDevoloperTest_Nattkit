@@ -1,2 +1,6 @@
-# Auto detect text files and perform LF normalization
 * text=auto
+*.cs diff=csharp
+*.shader text
+*.cginc text
+*.compute text
+*.hlsl text
