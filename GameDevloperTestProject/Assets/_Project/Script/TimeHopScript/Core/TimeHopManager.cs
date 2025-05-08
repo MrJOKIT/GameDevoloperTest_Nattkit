@@ -40,12 +40,21 @@ public class TimeHopManager : MonoBehaviour
     
     [Space(10)]
     [Header("Time Progression")]
+    [SerializeField] private bool timeStopped = false;
     [SerializeField] private Transform clockHand;
     [SerializeField] private float timeInOneDay = 180f;
     private float afternoonTime;
     private float eveningTime;
     private float timeInOneDayCounter;
     private float clockHandRotateSpeed;
+
+    [Space(10)]
+    [SerializeField] private GameObject loadingCanvas;
+    [SerializeField] private bool onTimeSkip;
+    public bool OnTimeSkip => onTimeSkip;
+    [SerializeField] private TimePeriod skipTargetPeriod;
+    [SerializeField] private float skipSpeed = 10;
+    private float skipSpeedTime = 1f;
     
     [Space(10)]
     [Header("Time UI")]
@@ -83,12 +92,11 @@ public class TimeHopManager : MonoBehaviour
     [ContextMenu("Trigger Time Hop")]
     public void TriggerTimeHop()
     {
-        if (currentState is MorningState) SetState(new AfternoonState());
-        else if (currentState is AfternoonState) SetState(new EveningState());
+        if (currentState is MorningState) SkipTimePeriod(TimePeriod.Afternoon);
+        else if (currentState is AfternoonState) SkipTimePeriod(TimePeriod.Evening);
         else if (currentState is EveningState)
         {
-            AdvanceDay();
-            SetState(new MorningState());
+            SkipTimePeriod(TimePeriod.Morning);
         }
     }
 
@@ -111,38 +119,108 @@ public class TimeHopManager : MonoBehaviour
         
     }
     
-    #endregion
-    
-    #region TimeProgression
-    
     private void ClockHand()
     {
-        clockHand.Rotate(0,0,-clockHandRotateSpeed * Time.deltaTime);
-        timeInOneDayCounter += Time.deltaTime;
+        if (timeStopped) return;
+        
+        clockHand.Rotate(0,0,-clockHandRotateSpeed * skipSpeedTime * Time.deltaTime);
+        timeInOneDayCounter += skipSpeedTime * Time.deltaTime;
         if (timeInOneDayCounter >= eveningTime)
         {
-            if (currentTimePeriod == TimePeriod.Evening) return;
-            SetState(new EveningState());
+            if (onTimeSkip)
+            {
+                if (skipTargetPeriod == TimePeriod.Evening)
+                {
+                    SkipSuccess();
+                    SetState(new EveningState());
+                }
+            }
+            else
+            {
+                if (currentTimePeriod != TimePeriod.Evening)
+                {
+                    SetState(new EveningState());
+                }
+            }
+            
         }
         else if (timeInOneDayCounter >= afternoonTime)
         {
-            if (currentTimePeriod == TimePeriod.Afternoon) return;
-            SetState(new AfternoonState());
+            if (onTimeSkip)
+            {
+                if (skipTargetPeriod == TimePeriod.Afternoon)
+                {
+                    SkipSuccess();
+                    SetState(new AfternoonState());
+                }
+            }
+            else
+            {
+                if (currentTimePeriod != TimePeriod.Afternoon)
+                {
+                    SetState(new AfternoonState());
+                }
+            }
         }
         else
         {
-            if (currentTimePeriod == TimePeriod.Morning) return;
-            SetState(new MorningState());
+            if (onTimeSkip)
+            {
+                if (skipTargetPeriod == TimePeriod.Morning)
+                {
+                    SkipSuccess();
+                    SetState(new MorningState());
+                }
+            }
+            else
+            {
+                if (currentTimePeriod != TimePeriod.Morning)
+                {
+                    SetState(new MorningState());
+                }
+            }
+            
         }
         
         if (timeInOneDayCounter > timeInOneDay)
         {
+            if (onTimeSkip)
+            {
+                if (skipTargetPeriod == TimePeriod.Morning)
+                {
+                    SkipSuccess();
+                    SetState(new MorningState());
+                }
+            }
             AdvanceDay();
             timeInOneDayCounter = 0f;
         }
     }
+
+    private void SkipTimePeriod(TimePeriod skipTargetPeriod)
+    {
+        if (onTimeSkip)
+        {
+            return;
+        }
+        loadingCanvas.SetActive(true);
+        onTimeSkip = true;
+        this.skipTargetPeriod = skipTargetPeriod;
+        skipSpeedTime = skipSpeed;
+
+    }
+
+    private void SkipSuccess()
+    {
+        loadingCanvas.SetActive(false);
+        onTimeSkip = false;
+        skipSpeedTime = 1f;
+    }
+
+    #endregion
     
-    //set ui
+    #region TimeUI
+    
     private void SetTimeUI()
     {
         dayCountText.text = "DAY " + dayCount;

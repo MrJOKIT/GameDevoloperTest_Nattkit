@@ -18,6 +18,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (TimeHopManager.Instance.OnTimeSkip)
+        {
+            SetIdle();
+            return;
+        }
         moveInput = Input.GetAxisRaw("Horizontal");
         
         if (moveInput != 0)
@@ -34,5 +39,12 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+    }
+
+    private void SetIdle()
+    {
+        moveInput = 0;
+        playerAnimation.SetBool("IsRun",false);
+        rb.velocity = Vector2.zero;
     }
 }
