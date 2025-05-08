@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -38,15 +39,30 @@ public class TimeHopManager : MonoBehaviour
     [SerializeField] private WeekDay currentDay = WeekDay.Monday;
     
     [Space(10)]
+    [Header("Time Progression")]
+    [SerializeField] private Transform clockHand;
+    [SerializeField] private float timeInOneDay = 180f;
+    private float timeInOneDayCounter;
+    private float clockHandRotateSpeed;
+    
+    [Space(10)]
     [Header("Time UI")]
-    [SerializeField] private GameObject timeUICanvas;
+    [SerializeField] private TextMeshProUGUI dayCountText;
+    [SerializeField] private TextMeshProUGUI weekDayText;
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
 
+        clockHandRotateSpeed = 360f / timeInOneDay;
         SetState(new MorningState());
+        SetTimeUI();
+    }
+
+    private void Update()
+    {
+        ClockHand();
     }
 
     #region TimeHop
@@ -66,6 +82,7 @@ public class TimeHopManager : MonoBehaviour
     {
         dayCount++;
         currentDay = (WeekDay)(((int)currentDay + 1) % 7);
+        SetTimeUI();
     }
 
     private void SetState(ITimeState newState)
@@ -80,11 +97,24 @@ public class TimeHopManager : MonoBehaviour
     
     #endregion
     
-    #region TimeUI
-
-    private void TimeHopUI()
+    #region TimeProgression
+    
+    private void ClockHand()
     {
-        
+        clockHand.Rotate(0,0,-clockHandRotateSpeed * Time.deltaTime);
+        timeInOneDayCounter += Time.deltaTime;
+        if (timeInOneDayCounter > timeInOneDay)
+        {
+            AdvanceDay();
+            timeInOneDayCounter = 0f;
+        }
+    }
+    
+    //set ui
+    private void SetTimeUI()
+    {
+        dayCountText.text = "DAY " + dayCount;
+        weekDayText.text = currentDay.ToString();
     }
     
     #endregion
