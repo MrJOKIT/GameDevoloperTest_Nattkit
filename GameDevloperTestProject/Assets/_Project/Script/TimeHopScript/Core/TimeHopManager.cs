@@ -42,6 +42,8 @@ public class TimeHopManager : MonoBehaviour
     [Header("Time Progression")]
     [SerializeField] private Transform clockHand;
     [SerializeField] private float timeInOneDay = 180f;
+    private float afternoonTime;
+    private float eveningTime;
     private float timeInOneDayCounter;
     private float clockHandRotateSpeed;
     
@@ -49,11 +51,23 @@ public class TimeHopManager : MonoBehaviour
     [Header("Time UI")]
     [SerializeField] private TextMeshProUGUI dayCountText;
     [SerializeField] private TextMeshProUGUI weekDayText;
+    
+    [Header("Time Enviroment")]
+    [SerializeField] private Camera camera;
+    [SerializeField] private float fadeDuration = 1.5f;
+    private Coroutine fadeRoutine;
+    
+    [SerializeField] private Color morningColor = new Color(0.8f, 0.9f, 1f);
+    [SerializeField] private Color afternoonColor = new Color(1f, 0.95f, 0.8f);
+    [SerializeField] private Color eveningColor = new Color(0.2f, 0.2f, 0.4f);
 
     private void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+        
+        afternoonTime = timeInOneDay / 2;
+        eveningTime = (afternoonTime / 2) / 2 + timeInOneDay / 2;
 
         clockHandRotateSpeed = 360f / timeInOneDay;
         SetState(new MorningState());
@@ -93,6 +107,8 @@ public class TimeHopManager : MonoBehaviour
 
         OnTimeChanged?.Invoke(currentState.GetTimePeriod(), dayCount, currentDay);
         currentTimePeriod = currentState.GetTimePeriod();
+        LightChanged(currentTimePeriod);
+        
     }
     
     #endregion
@@ -103,6 +119,22 @@ public class TimeHopManager : MonoBehaviour
     {
         clockHand.Rotate(0,0,-clockHandRotateSpeed * Time.deltaTime);
         timeInOneDayCounter += Time.deltaTime;
+        if (timeInOneDayCounter >= eveningTime)
+        {
+            if (currentTimePeriod == TimePeriod.Evening) return;
+            SetState(new EveningState());
+        }
+        else if (timeInOneDayCounter >= afternoonTime)
+        {
+            if (currentTimePeriod == TimePeriod.Afternoon) return;
+            SetState(new AfternoonState());
+        }
+        else
+        {
+            if (currentTimePeriod == TimePeriod.Morning) return;
+            SetState(new MorningState());
+        }
+        
         if (timeInOneDayCounter > timeInOneDay)
         {
             AdvanceDay();
@@ -117,5 +149,43 @@ public class TimeHopManager : MonoBehaviour
         weekDayText.text = currentDay.ToString();
     }
     
+    private void LightChanged(TimePeriod time)
+    {
+        Color targetColor = camera.backgroundColor;
+
+        switch (time)
+        {
+            case TimePeriod.Morning:
+                targetColor = morningColor;
+                break;
+            case TimePeriod.Afternoon:
+                targetColor = afternoonColor;
+                break;
+            case TimePeriod.Evening:
+                targetColor = eveningColor;
+                break;
+        }
+        
+        if (fadeRoutine != null)
+            StopCoroutine(fadeRoutine);
+        
+        fadeRoutine = StartCoroutine(FadeToColor(targetColor));
+    }
+    
+    private IEnumerator FadeToColor(Color targetColor)
+    {
+        Color startColor = camera.backgroundColor;
+        float time = 0f;
+
+        while (time < fadeDuration)
+        {
+            time += Time.deltaTime;
+            float t = time / fadeDuration;
+            camera.backgroundColor = Color.Lerp(startColor, targetColor, t);
+            yield return null;
+        }
+
+        camera.backgroundColor = targetColor;
+    }
     #endregion
 }
