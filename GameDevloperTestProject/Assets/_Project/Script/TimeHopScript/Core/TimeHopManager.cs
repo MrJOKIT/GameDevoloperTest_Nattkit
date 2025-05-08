@@ -206,7 +206,7 @@ public class TimeHopManager : MonoBehaviour
         loadingCanvas.SetActive(true);
         onTimeSkip = true;
         this.skipTargetPeriod = skipTargetPeriod;
-        skipSpeedTime = skipSpeed;
+        skipSpeedTime = skipSpeed * clockHandRotateSpeed;
 
     }
 
