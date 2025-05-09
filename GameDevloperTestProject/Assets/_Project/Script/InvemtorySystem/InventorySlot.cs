@@ -1,5 +1,6 @@
 
 using System;
+using UnityEngine;
 
 [Serializable]
 public class InventorySlot
@@ -41,4 +42,6 @@ public class InventorySlot
     {
         return item != null && item.itemName == targetItem.itemName;
     }
+
+    
 }

@@ -71,4 +71,20 @@ public class InventoryManager : MonoBehaviour
             }
         }
     }
+    
+    [ContextMenu("Sort by Name")]
+    public void SortByName()
+    {
+        inventorySlots.Sort((a, b) => a.item.itemName.CompareTo(b.item.itemName));
+    }
+    [ContextMenu("Sort by Number")]
+    public void SortByNumber()
+    {
+        inventorySlots.Sort((a, b) => a.quantity.CompareTo(b.quantity));
+    }
+    [ContextMenu("Sort by Type")]
+    public void SortByType()
+    {
+        inventorySlots.Sort((a, b) => a.item.itemType.CompareTo(b.item.itemType));
+    }
 }
