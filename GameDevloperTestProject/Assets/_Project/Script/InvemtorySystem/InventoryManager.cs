@@ -42,8 +42,21 @@ public class InventoryManager : MonoBehaviour
                 return;
             }
         }
-
         Debug.Log("Inventory Full!");
+    }
+
+    public bool CheckInventoryFull()
+    {
+        bool isFull = true;
+        foreach (var slot in inventorySlots)
+        {
+            if (slot.IsEmpty)
+            {
+                isFull = false;
+            }
+        }
+
+        return isFull;
     }
 
     public void RemoveItem(Item item)

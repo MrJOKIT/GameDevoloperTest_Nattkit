@@ -11,6 +11,12 @@ public class PickUpItem : InteractObject
     {
         if (Input.GetKeyDown(KeyCode.E) && onPlayer)
         {
+            if (InventoryManager.Instance.CheckInventoryFull())
+            {
+                Announcement.Instance.SetAnnouncementText("Inventory is full");
+                Debug.Log("Inventory is full");
+                return;
+            }
             InventoryManager.Instance.AddItem(itemProfile);
             Destroy(gameObject);
         }

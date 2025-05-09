@@ -116,7 +116,7 @@ public class TimeHopManager : MonoBehaviour
         OnTimeChanged?.Invoke(currentState.GetTimePeriod(), dayCount, currentDay);
         currentTimePeriod = currentState.GetTimePeriod();
         LightChanged(currentTimePeriod);
-        
+        Announcement.Instance.SetAnnouncementText(currentTimePeriod.ToString());
     }
     
     private void ClockHand()
