@@ -6,54 +6,32 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ItemSlotUI : MonoBehaviour,IPointerEnterHandler,IPointerExitHandler
+public class ItemSlotUI : MonoBehaviour
 {
+    public int slotIndex;
     [SerializeField] private Item itemProfile;
+    [SerializeField] private int itemCount;
     public Item ItemProfile { get { return itemProfile; } private set { itemProfile = value; } }
-
-    [Space(10)] 
-    [Header("Item Slot UI")] 
-    [SerializeField] private GameObject itemInfoCanvas;
-    [SerializeField] private TextMeshProUGUI itemNameText;
-    [SerializeField] private TextMeshProUGUI itemTypeText;
-    [SerializeField] private Image itemIcon;
-
-    private void Awake()
+    public int ItemCount { get { return itemCount; } private set { itemCount = value; } }
+    
+    public void SetItem(Item item, int count)
     {
-        itemInfoCanvas.SetActive(false);
-    }
-
-    public void SetItem(Item item)
-    {
+        if (item == null)
+        {
+            ClearItem();
+            return;
+        }
         itemProfile = item;
-        itemIcon.sprite = itemProfile.itemIcon;
-        itemNameText.text = itemProfile.itemName;
-        itemTypeText.text = itemProfile.itemType.ToString();
-        
-        itemIcon.gameObject.SetActive(true);
+        itemCount = count;
+        GetComponentInChildren<DropSlot>().currentItem.SetUI(itemProfile, itemCount);
     }
 
     public void ClearItem()
     {
         itemProfile = null;
-        itemIcon.sprite = null;
-        itemNameText.text = String.Empty;
-        itemTypeText.text = String.Empty;
-        
-        itemIcon.gameObject.SetActive(false);
+        itemCount = 0;
+        GetComponentInChildren<DropSlot>().currentItem.ClearUI();
     }
     
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (itemProfile == null)
-        {
-            return;
-        }
-        itemInfoCanvas.SetActive(true);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        itemInfoCanvas.SetActive(false);
-    }
+    
 }

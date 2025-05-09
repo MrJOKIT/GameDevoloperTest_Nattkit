@@ -34,18 +34,20 @@ public class InventoryManager : MonoBehaviour
         {
             ItemSlotUI slotUI = Instantiate(itemSlotPrefab, inventorySlotsParent).GetComponent<ItemSlotUI>();
             slotsUI.Add(slotUI);
+            slotsUI[i].slotIndex = i;
         }
     }
 
+    [ContextMenu("Set Inventory UI Setup")]
     private void SetUpItemSlotUI()
     {
         for (int i = 0; i < slotCount; i++)
         {
-            if (slotsUI[i].ItemProfile == inventorySlots[i].item)
+            if (slotsUI[i].ItemProfile == inventorySlots[i].item && slotsUI[i].ItemCount == inventorySlots[i].quantity)
             {
                 continue;
             }
-            slotsUI[i].SetItem(inventorySlots[i].item);
+            slotsUI[i].SetItem(inventorySlots[i].item,inventorySlots[i].quantity);
         }
     }
 
@@ -57,6 +59,7 @@ public class InventoryManager : MonoBehaviour
             {
                 slot.Add(item);
                 OnInventoryChanged?.Invoke(inventorySlots);
+                SetUpItemSlotUI();
                 return;
             }
         }
@@ -105,19 +108,64 @@ public class InventoryManager : MonoBehaviour
     [ContextMenu("Sort by Name")]
     public void SortByName()
     {
-        inventorySlots.Sort((a, b) => a.item.itemName.CompareTo(b.item.itemName));
+        inventorySlots.Sort((a, b) =>
+        {
+            string aName = a.item?.itemName;
+            string bName = b.item?.itemName;
+
+            if (aName == null && bName != null) return 1;
+            if (bName == null && aName != null) return -1;    
+            if (aName == null && bName == null) return 0;    
+
+            return aName.CompareTo(bName);                    
+        });
+
         SetUpItemSlotUI();
     }
     [ContextMenu("Sort by Number")]
     public void SortByNumber()
     {
-        inventorySlots.Sort((a, b) => a.quantity.CompareTo(b.quantity));
+        inventorySlots.Sort((a, b) =>
+        {
+            if (a.quantity == 0 && b.quantity != 0) return 1;
+            if (b.quantity == 0 && a.quantity != 0) return -1;
+            return a.quantity.CompareTo(b.quantity);
+        });
         SetUpItemSlotUI();
     }
     [ContextMenu("Sort by Type")]
     public void SortByType()
     {
-        inventorySlots.Sort((a, b) => a.item.itemType.CompareTo(b.item.itemType));
+        inventorySlots.Sort((a, b) =>
+        {
+            bool aNull = a.item == null;
+            bool bNull = b.item == null;
+
+            if (aNull && !bNull) return 1;
+            if (bNull && !aNull) return -1;
+            if (aNull && bNull) return 0;
+
+            return a.item.itemType.CompareTo(b.item.itemType);
+        });
+        SetUpItemSlotUI();
+    }
+    
+    public static void Swap<T>(List<T> list, int indexA, int indexB)
+    {
+        if (indexA < 0 || indexB < 0 || indexA >= list.Count || indexB >= list.Count)
+        {
+            Debug.LogWarning("Invalid index for swap.");
+            return;
+        }
+
+        T temp = list[indexA];
+        list[indexA] = list[indexB];
+        list[indexB] = temp;
+    }
+
+    public void SwapSlot(int indexA, int indexB)
+    {
+        Swap(inventorySlots,indexA,indexB);
         SetUpItemSlotUI();
     }
 }
