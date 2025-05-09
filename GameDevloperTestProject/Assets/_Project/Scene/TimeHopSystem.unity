@@ -2029,6 +2029,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4886f94de37c4d4e80d61e8246d969a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerMaxHealth: 5
+  playerHealth: 5
+  playerDamage: 1
   canInteract: 0
   interactingUI: {fileID: 137346669}
 --- !u!1 &1003249848
