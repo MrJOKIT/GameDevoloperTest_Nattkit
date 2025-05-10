@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InventoryManager : MonoBehaviour
 {
-    
+    public Player player;
     public static InventoryManager Instance { get; private set; }
 
     public static Action<List<InventorySlot>> OnInventoryChanged;
@@ -17,6 +17,9 @@ public class InventoryManager : MonoBehaviour
     public GameObject itemSlotPrefab;
     public Transform inventorySlotsParent;
     public List<ItemSlotUI> slotsUI;
+    
+    [Header("Inventory Equipment Setup")]
+    public Item equipmentSlot;
 
     private void Awake()
     {
@@ -25,6 +28,8 @@ public class InventoryManager : MonoBehaviour
         
         SetUpInventory();
     }
+    
+    #region Inventory
 
     private void SetUpInventory()
     {
@@ -43,11 +48,11 @@ public class InventoryManager : MonoBehaviour
     {
         for (int i = 0; i < slotCount; i++)
         {
-            if (slotsUI[i].ItemProfile == inventorySlots[i].item && slotsUI[i].ItemCount == inventorySlots[i].quantity)
+            if (slotsUI[i].ItemProfile == inventorySlots[i].item && slotsUI[i].ItemCount == inventorySlots[i].quantity && slotsUI[i].onEquip == inventorySlots[i].onEquip)
             {
                 continue;
             }
-            slotsUI[i].SetItem(inventorySlots[i].item,inventorySlots[i].quantity);
+            slotsUI[i].SetItem(inventorySlots[i].item,inventorySlots[i].quantity,inventorySlots[i].onEquip);
         }
     }
 
@@ -77,12 +82,12 @@ public class InventoryManager : MonoBehaviour
         Debug.Log("Inventory Full!");
     }
 
-    public bool CheckInventoryFull()
+    public bool CheckInventoryFull(Item item)
     {
         bool isFull = true;
         foreach (var slot in inventorySlots)
         {
-            if (slot.IsEmpty)
+            if (slot.IsEmpty || slot.CanStack(item))
             {
                 isFull = false;
             }
@@ -104,7 +109,64 @@ public class InventoryManager : MonoBehaviour
             }
         }
     }
+    #endregion
+
+    #region Inventory Equip
+
+    public void UseItem(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= inventorySlots.Count)
+            return;
+
+        var slot = inventorySlots[slotIndex];
+        if (slot.item == null)
+            return;
+
+        Item item = slot.item;
+
+        switch (item.itemType)
+        {
+            case ItemType.Tool:
+                EquipItem(slotIndex);
+                break;
+
+            case ItemType.Seed:
+                Debug.Log("🌱 เตรียมปลูก: " + item.itemName);
+                // TODO: เตรียมระบบปลูก
+                break;
+
+            case ItemType.CraftedObject:
+                Debug.Log("🧪 ใช้: " + item.itemName);
+                slot.Remove(item); // ลดจำนวนหรือเอาออก
+                break;
+
+            case ItemType.Resources:
+                Debug.Log("📦 ไม่สามารถใช้ได้โดยตรง: " + item.itemName);
+                break;
+        }
+
+        SetUpItemSlotUI();
+        OnInventoryChanged?.Invoke(inventorySlots);
+    }
+    private void EquipItem(int slotIndex)
+    {
+        Item tempItem = inventorySlots[slotIndex].item;
+        if (tempItem != equipmentSlot)
+        {
+            if (equipmentSlot != null)
+            {
+                int index = inventorySlots.FindIndex(slot => slot.item == equipmentSlot);
+                inventorySlots[index].onEquip = false;
+            }
+            inventorySlots[slotIndex].onEquip = true;
+            equipmentSlot = tempItem;
+            SetUpItemSlotUI();
+        }
+    }
+
+    #endregion
     
+    #region Inventory Sorting
     [ContextMenu("Sort by Name")]
     public void SortByName()
     {
@@ -168,4 +230,5 @@ public class InventoryManager : MonoBehaviour
         Swap(inventorySlots,indexA,indexB);
         SetUpItemSlotUI();
     }
+    #endregion
 }
