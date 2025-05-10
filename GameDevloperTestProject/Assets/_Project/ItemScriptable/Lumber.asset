@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9432aee7fddf5d84d9c808ed10aa7a5d, type: 3}
   m_Name: Lumber
   m_EditorClassIdentifier: 
-  itemIcon: {fileID: 21300000, guid: e78ac6a7d77978847b344f627a55f9ca, type: 3}
+  itemIcon: {fileID: 21300000, guid: 80560d948d65b464f962194d5ae982c6, type: 3}
   itemName: Lumber
   itemType: 0
   maxStack: 10
