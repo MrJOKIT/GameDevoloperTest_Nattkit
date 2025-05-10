@@ -159,7 +159,7 @@ MonoBehaviour:
   currentHP: 0
   attackRange: 1.5
   damage: 5
-  attackDuration: 2.5
+  attackDuration: 1.5
   smallSlimePrefab: {fileID: 972990121479917559, guid: 28aaa266eb7e01b4aa6ac1e59840bed4, type: 3}
   target: {fileID: 0}
   animator: {fileID: 4979947295676005535}

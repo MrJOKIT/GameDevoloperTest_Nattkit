@@ -12,6 +12,7 @@ public class EnemySpawnManager : MonoBehaviour
     private void OnEnable()
     {
         TimeHopManager.OnTimeChanged += OnTimeChanged;
+        SpawnEnemy();
     }
 
     private void OnDisable()
