@@ -11,6 +11,7 @@ public class WallPortal : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            other.gameObject.GetComponent<Player>().ExitCombatArea();
             Warp(other.transform);
         }
     }

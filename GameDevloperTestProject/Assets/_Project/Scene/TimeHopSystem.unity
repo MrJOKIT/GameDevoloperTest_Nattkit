@@ -3940,6 +3940,7 @@ GameObject:
   - component: {fileID: 1001748483}
   - component: {fileID: 1001748485}
   - component: {fileID: 1001748484}
+  - component: {fileID: 1001748486}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -3990,6 +3991,7 @@ Transform:
   - {fileID: 639910947}
   - {fileID: 49354490}
   - {fileID: 1407056432}
+  - {fileID: 2113144037}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!70 &1001748483
@@ -4068,6 +4070,22 @@ MonoBehaviour:
   canInteract: 0
   interactingUI: {fileID: 137346669}
   playerHpBar: {fileID: 1320751470}
+--- !u!114 &1001748486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1001748479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b32d56ae4fe9b8448960d31c210199b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerSprite: {fileID: 49354491}
+  projectilePrefab: {fileID: 8279075025331826271, guid: 0f0db7bb6620c0045b75eb4c169167cb, type: 3}
+  firePoint: {fileID: 2113144037}
+  cooldown: 0.5
 --- !u!1 &1003249848
 GameObject:
   m_ObjectHideFlags: 0
@@ -5738,6 +5756,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1687425039}
+  - component: {fileID: 1687425040}
   m_Layer: 0
   m_Name: CombatRoom
   m_TagString: Untagged
@@ -5763,6 +5782,21 @@ Transform:
   - {fileID: 1340441507}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1687425040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1687425038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f85b510c72dcfb46a0deb91970b6a5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPrefab: {fileID: 8495166087383652020, guid: eaece71c58f214445a7347727d64918f, type: 3}
+  spawnPoint: {fileID: 1687425039}
+  currentEnemy: {fileID: 0}
 --- !u!1 &1709704473
 GameObject:
   m_ObjectHideFlags: 0
@@ -6560,6 +6594,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2113144036
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2113144037}
+  m_Layer: 0
+  m_Name: FirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2113144037
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2113144036}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.072, y: 1.564, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1001748482}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &686014062900137800
 MonoBehaviour:
   m_ObjectHideFlags: 0
