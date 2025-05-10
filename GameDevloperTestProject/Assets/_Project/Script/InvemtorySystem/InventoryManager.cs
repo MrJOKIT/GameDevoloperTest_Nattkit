@@ -129,19 +129,18 @@ public class InventoryManager : MonoBehaviour
             case ItemType.Tool:
                 EquipItem(slotIndex);
                 break;
-
             case ItemType.Seed:
-                Debug.Log("🌱 เตรียมปลูก: " + item.itemName);
-                // TODO: เตรียมระบบปลูก
+                //use for harvest
                 break;
 
             case ItemType.CraftedObject:
-                Debug.Log("🧪 ใช้: " + item.itemName);
-                slot.Remove(item); // ลดจำนวนหรือเอาออก
+                // only potion
+                player.Heal(10);
+                slot.Remove(item);
                 break;
 
             case ItemType.Resources:
-                Debug.Log("📦 ไม่สามารถใช้ได้โดยตรง: " + item.itemName);
+                //use for craft
                 break;
         }
 

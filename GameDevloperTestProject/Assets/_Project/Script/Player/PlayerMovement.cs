@@ -6,6 +6,13 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
+    [Header("Jump Settings")]
+    public float jumpForce = 8f;
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.2f;
+    public LayerMask groundLayer;
+
+    private bool isGrounded;
 
     private Rigidbody2D rb;
     [SerializeField] private SpriteRenderer playerSprite;
@@ -23,16 +30,25 @@ public class PlayerMovement : MonoBehaviour
             SetIdle();
             return;
         }
-        moveInput = Input.GetAxisRaw("Horizontal");
         
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        moveInput = Input.GetAxisRaw("Horizontal");
+
         if (moveInput != 0)
         {
-            playerAnimation.SetBool("IsRun",true);
+            playerAnimation.SetBool("IsRun", true);
             playerSprite.flipX = moveInput < 0;
         }
         else
         {
-            playerAnimation.SetBool("IsRun",false);
+            playerAnimation.SetBool("IsRun", false);
+        }
+        
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            //playerAnimation.SetTrigger("Jump"); // for jump animation
         }
     }
 
