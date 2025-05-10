@@ -102,6 +102,10 @@ public class InventoryManager : MonoBehaviour
         {
             if (slot.Contains(item))
             {
+                if (item == equipmentSlot)
+                {
+                    equipmentSlot = null;
+                }
                 slot.Remove(item);
                 OnInventoryChanged?.Invoke(inventorySlots);
                 SetUpItemSlotUI();

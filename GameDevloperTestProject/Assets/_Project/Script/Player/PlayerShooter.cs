@@ -26,7 +26,7 @@ public class PlayerShooter : MonoBehaviour
 
     void Fire()
     {
-        Vector2 direction = playerSprite.flipX ? Vector2.left : Vector2.right;
+        Vector2 direction = transform.localScale.x < 0 ? Vector2.left : Vector2.right;
 
         GameObject projectileObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         ProjectileBullet projectile = projectileObj.GetComponent<ProjectileBullet>();

@@ -38,7 +38,10 @@ public class PlayerMovement : MonoBehaviour
         if (moveInput != 0)
         {
             playerAnimation.SetBool("IsRun", true);
-            playerSprite.flipX = moveInput < 0;
+
+            Vector3 scale = transform.localScale;
+            scale.x = moveInput < 0 ? -1f : 1f;
+            transform.localScale = scale;
         }
         else
         {

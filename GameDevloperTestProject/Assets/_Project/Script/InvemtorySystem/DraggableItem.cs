@@ -81,6 +81,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         SetButtonSlot(parentAfterDrag.GetComponent<DropSlot>().currentSlot.ItemProfile.itemType);
         equipRing.GetComponent<Image>().raycastTarget = true;
     }
+
+    public void RemoveItem()
+    {
+        InventoryManager.Instance.RemoveItem(parentAfterDrag.GetComponent<DropSlot>().currentSlot.ItemProfile);
+    }
     
     public void OnPointerEnter(PointerEventData eventData)
     {

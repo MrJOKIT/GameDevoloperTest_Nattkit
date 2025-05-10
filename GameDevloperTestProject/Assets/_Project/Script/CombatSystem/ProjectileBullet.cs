@@ -13,7 +13,7 @@ public class ProjectileBullet : MonoBehaviour
     {
         direction = shootDirection.normalized;
         this.damage = damage;
-        Destroy(gameObject, 3f); // ลบกระสุนหลัง 3 วิ
+        Destroy(gameObject, 3f);
     }
 
     void Update()
